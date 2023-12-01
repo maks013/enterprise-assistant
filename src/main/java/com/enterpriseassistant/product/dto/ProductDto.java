@@ -10,6 +10,7 @@ import java.math.RoundingMode;
 @Getter
 public class ProductDto {
 
+    private final Integer id;
     private final String gtin;
     private final String name;
     private final BigDecimal priceGross;

@@ -22,6 +22,7 @@ class Product {
 
     ProductDto toDto() {
         return ProductDto.builder()
+                .id(id)
                 .gtin(gtin)
                 .name(name)
                 .priceGross(getAsBigDecimal(priceGross))
