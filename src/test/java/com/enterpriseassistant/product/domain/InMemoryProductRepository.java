@@ -11,9 +11,9 @@ class InMemoryProductRepository implements ProductRepository {
     Map<Integer, Product> inMemoryProducts = new ConcurrentHashMap<>();
 
     private static final Product product1 = new Product(1, "0123456789012", "Backpack",
-            BigDecimal.valueOf(123), BigDecimal.valueOf(100), "Black");
+            BigDecimal.valueOf(123), BigDecimal.valueOf(100),"https://example.com/backpack-image.jpg" ,"Black");
     private static final Product product2 = new Product(1, "0123456789013", "Shoulder bag",
-            BigDecimal.valueOf(123), BigDecimal.valueOf(100), "Small, blue");
+            BigDecimal.valueOf(123), BigDecimal.valueOf(100),"https://example.com/shoulder-bag-image.jpg" ,"Small, blue");
 
     public InMemoryProductRepository() {
         inMemoryProducts.put(1, product1);

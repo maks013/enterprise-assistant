@@ -18,6 +18,7 @@ class Product {
     private String name;
     private BigDecimal priceGross;
     private BigDecimal priceNet;
+    private String imageUrl;
     private String additionalInformation;
 
     ProductDto toDto() {
@@ -27,6 +28,7 @@ class Product {
                 .name(name)
                 .priceGross(getAsBigDecimal(priceGross))
                 .priceNet(getAsBigDecimal(priceNet))
+                .imageUrl(imageUrl)
                 .additionalInformation(additionalInformation)
                 .build();
     }

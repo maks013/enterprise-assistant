@@ -13,6 +13,7 @@ class ProductMapper {
                 .name(addProductDto.getName())
                 .priceNet(addProductDto.getPriceNet())
                 .priceGross(calculateGrossPrice(addProductDto.getPriceNet()))
+                .imageUrl(addProductDto.getImageUrl())
                 .additionalInformation(addProductDto.getAdditionalInformation())
                 .build();
     }

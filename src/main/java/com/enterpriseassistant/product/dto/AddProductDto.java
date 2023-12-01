@@ -12,6 +12,7 @@ public class AddProductDto {
     private final String gtin;
     private final String name;
     private final BigDecimal priceNet;
+    private final String imageUrl;
     private final String additionalInformation;
 
 }

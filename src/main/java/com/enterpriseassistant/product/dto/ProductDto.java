@@ -15,6 +15,7 @@ public class ProductDto {
     private final String name;
     private final BigDecimal priceGross;
     private final BigDecimal priceNet;
+    private final String imageUrl;
     private final String additionalInformation;
 
     public BigDecimal getPriceNet() {

@@ -31,6 +31,7 @@ class ProductFacadeTest {
                 .gtin("0123452783012")
                 .name("New product")
                 .priceNet(BigDecimal.valueOf(100))
+                .imageUrl("https://example.com/product-image.jpg")
                 .additionalInformation("information")
                 .build();
         //when
@@ -41,11 +42,12 @@ class ProductFacadeTest {
         //then
         assertAll(
                 () -> assertEquals(1, sizeAfterAddingProduct - sizeBeforeAddingProduct),
-                () -> assertEquals("0123452783012", addedProduct.getGtin()),
-                () -> assertEquals("New product", addedProduct.getName()),
-                () -> assertEquals(BigDecimal.valueOf(100).setScale(2), addedProduct.getPriceNet()),
+                () -> assertEquals(product.getGtin(), addedProduct.getGtin()),
+                () -> assertEquals(product.getName(), addedProduct.getName()),
+                () -> assertEquals(product.getPriceNet().setScale(2), addedProduct.getPriceNet()),
                 () -> assertEquals(BigDecimal.valueOf(123).setScale(2), addedProduct.getPriceGross()),
-                () -> assertEquals("information", addedProduct.getAdditionalInformation())
+                () -> assertEquals(product.getImageUrl(), addedProduct.getImageUrl()),
+                () -> assertEquals(product.getAdditionalInformation(), addedProduct.getAdditionalInformation())
         );
     }
 
@@ -58,6 +60,7 @@ class ProductFacadeTest {
                 .gtin(incorrectGtin)
                 .name("Example")
                 .priceNet(BigDecimal.valueOf(100))
+                .imageUrl("https://example.com/product-image.jpg")
                 .additionalInformation("example information")
                 .build();
         //then
@@ -77,6 +80,7 @@ class ProductFacadeTest {
                 .gtin(existingGtin)
                 .name("Example")
                 .priceNet(BigDecimal.valueOf(100))
+                .imageUrl("https://example.com/product-image.jpg")
                 .additionalInformation("example information")
                 .build();
         //then
@@ -102,6 +106,7 @@ class ProductFacadeTest {
                 .gtin("0123452783012")
                 .name(name)
                 .priceNet(BigDecimal.valueOf(100))
+                .imageUrl("https://example.com/product-image.jpg")
                 .additionalInformation("information")
                 .build();
         //when
@@ -135,6 +140,7 @@ class ProductFacadeTest {
                 .gtin(gtin)
                 .name("name")
                 .priceNet(BigDecimal.valueOf(100))
+                .imageUrl("https://example.com/product-image.jpg")
                 .additionalInformation("information")
                 .build();
         //when
