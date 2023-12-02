@@ -105,6 +105,29 @@ class ServiceFacadeTest {
     }
 
     @Test
+    void should_get_service_by_id() {
+        //given
+        final String name = "New service";
+        AddServiceDto service = AddServiceDto.builder()
+                .name(name)
+                .priceNet(BigDecimal.valueOf(100))
+                .imageUrl("https://example.com/service-image.jpg")
+                .additionalInformation("information")
+                .build();
+        //when
+        ServiceDto addedService = serviceFacade.addNewService(service);
+        ServiceDto serviceDto = serviceFacade.getServiceById(addedService.getId());
+        //then
+        assertAll(
+                () -> assertEquals(addedService.getName(), serviceDto.getName()),
+                () -> assertEquals(addedService.getPriceNet(), serviceDto.getPriceNet()),
+                () -> assertEquals(addedService.getPriceGross(), serviceDto.getPriceGross()),
+                () -> assertEquals(addedService.getImageUrl(), serviceDto.getImageUrl()),
+                () -> assertEquals(addedService.getAdditionalInformation(), serviceDto.getAdditionalInformation())
+        );
+    }
+
+    @Test
     void should_throw_exception_when_get_service_by_not_existing_name() {
         //given
         final String notExistingName = "notExistingName";

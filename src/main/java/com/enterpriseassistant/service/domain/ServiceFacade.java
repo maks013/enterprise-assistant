@@ -30,6 +30,10 @@ public class ServiceFacade {
         return repository.save(service).toDto();
     }
 
+    public ServiceDto getServiceById(Integer id) {
+        return getService(id).toDto();
+    }
+
     public ServiceDto getServiceByName(String name) {
         return repository.findByName(name)
                 .orElseThrow(ServiceNotFound::new)
