@@ -123,6 +123,30 @@ class ProductFacadeTest {
     }
 
     @Test
+    void should_get_product_by_id() {
+        //given
+        final String name = "New product";
+        AddProductDto product = AddProductDto.builder()
+                .gtin("0123452783012")
+                .name(name)
+                .priceNet(BigDecimal.valueOf(100))
+                .imageUrl("https://example.com/product-image.jpg")
+                .additionalInformation("information")
+                .build();
+        //when
+        ProductDto addedProduct = productFacade.addNewProduct(product);
+        ProductDto productDto = productFacade.getProductById(addedProduct.getId());
+        //then
+        assertAll(
+                () -> assertEquals(addedProduct.getName(), productDto.getName()),
+                () -> assertEquals(addedProduct.getGtin(), productDto.getGtin()),
+                () -> assertEquals(addedProduct.getPriceNet(), productDto.getPriceNet()),
+                () -> assertEquals(addedProduct.getPriceGross(), productDto.getPriceGross()),
+                () -> assertEquals(addedProduct.getAdditionalInformation(), productDto.getAdditionalInformation())
+        );
+    }
+
+    @Test
     void should_throw_exception_when_get_product_by_not_existing_gtin() {
         //given
         final String notExistingGtin = "0123452723032";

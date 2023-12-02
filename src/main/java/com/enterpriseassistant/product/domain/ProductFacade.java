@@ -31,23 +31,26 @@ public class ProductFacade {
         return repository.save(product).toDto();
     }
 
+    public ProductDto getProductById(Integer id) {
+        return getProduct(id).toDto();
+    }
+
     public ProductDto getProductByName(String name) {
         return repository.findByName(name)
-                .orElseThrow(ProductNotFound::new)
-                .toDto();
+                .map(Product::toDto)
+                .orElseThrow(ProductNotFound::new);
     }
 
     public ProductDto getProductByGtin(String gtin) {
         return repository.findByGtin(gtin)
-                .orElseThrow(ProductNotFound::new)
-                .toDto();
+                .map(Product::toDto)
+                .orElseThrow(ProductNotFound::new);
     }
 
     public void deleteProduct(Integer id) {
         final Product product = getProduct(id);
         repository.delete(product);
     }
-
 
     private Product getProduct(Integer id) {
         return repository.findById(id)
