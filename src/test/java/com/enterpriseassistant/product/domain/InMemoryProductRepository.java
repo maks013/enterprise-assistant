@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-class InMemoryProductRepository implements ProductRepository {
+public class InMemoryProductRepository implements ProductRepository {
 
     Map<Integer, Product> inMemoryProducts = new ConcurrentHashMap<>();
 
