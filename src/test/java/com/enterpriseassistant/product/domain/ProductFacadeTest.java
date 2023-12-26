@@ -2,12 +2,16 @@ package com.enterpriseassistant.product.domain;
 
 import com.enterpriseassistant.product.dto.AddProductDto;
 import com.enterpriseassistant.product.dto.ProductDto;
+import com.enterpriseassistant.product.dto.UpdateProductDto;
 import com.enterpriseassistant.product.exception.InvalidGtinNumberFormat;
 import com.enterpriseassistant.product.exception.ProductNotFound;
 import com.enterpriseassistant.product.exception.TakenGtin;
+import com.enterpriseassistant.service.dto.ServiceDto;
+import com.enterpriseassistant.service.exception.ServiceNotFound;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,7 +40,7 @@ class ProductFacadeTest {
                 .build();
         //when
         final int sizeBeforeAddingProduct = productFacade.findAllProducts().size();
-        ProductDto addedProduct = productFacade.addNewProduct(product);
+        com.enterpriseassistant.product.dto.ProductDto addedProduct = productFacade.addNewProduct(product);
         final int sizeAfterAddingProduct = productFacade.findAllProducts().size();
 
         //then
@@ -110,8 +114,8 @@ class ProductFacadeTest {
                 .additionalInformation("information")
                 .build();
         //when
-        ProductDto addedProduct = productFacade.addNewProduct(product);
-        ProductDto productDto = productFacade.getProductByName(name);
+        com.enterpriseassistant.product.dto.ProductDto addedProduct = productFacade.addNewProduct(product);
+        com.enterpriseassistant.product.dto.ProductDto productDto = productFacade.getProductByName(name);
         //then
         assertAll(
                 () -> assertEquals(addedProduct.getName(), productDto.getName()),
@@ -134,8 +138,8 @@ class ProductFacadeTest {
                 .additionalInformation("information")
                 .build();
         //when
-        ProductDto addedProduct = productFacade.addNewProduct(product);
-        ProductDto productDto = productFacade.getProductById(addedProduct.getId());
+        com.enterpriseassistant.product.dto.ProductDto addedProduct = productFacade.addNewProduct(product);
+        com.enterpriseassistant.product.dto.ProductDto productDto = productFacade.getProductById(addedProduct.getId());
         //then
         assertAll(
                 () -> assertEquals(addedProduct.getName(), productDto.getName()),
@@ -168,8 +172,8 @@ class ProductFacadeTest {
                 .additionalInformation("information")
                 .build();
         //when
-        ProductDto addedProduct = productFacade.addNewProduct(product);
-        ProductDto productDto = productFacade.getProductByGtin(gtin);
+        com.enterpriseassistant.product.dto.ProductDto addedProduct = productFacade.addNewProduct(product);
+        com.enterpriseassistant.product.dto.ProductDto productDto = productFacade.getProductByGtin(gtin);
         //then
         assertAll(
                 () -> assertEquals(addedProduct.getName(), productDto.getName()),
@@ -200,5 +204,65 @@ class ProductFacadeTest {
         final int sizeAfterDeleting = productFacade.findAllProducts().size();
         //then
         assertEquals(1, sizeBeforeDeleting - sizeAfterDeleting);
+    }
+
+    @Test
+    void should_throw_exception_when_update_not_existing_product() {
+        //given
+        final int notExistingProductId = 999;
+        com.enterpriseassistant.product.dto.UpdateProductDto updateProductDto = com.enterpriseassistant.product.dto.UpdateProductDto.builder()
+                .name("Updated")
+                .priceNet(BigDecimal.valueOf(1000))
+                .additionalInformation("Updated information")
+                .build();
+        //when
+        //then
+        assertThrows(ProductNotFound.class, () -> productFacade.updateProduct(updateProductDto, notExistingProductId));
+    }
+
+    @Test
+    void should_throw_exception_when_update_with_empty_gtin() {
+        //given
+        com.enterpriseassistant.product.dto.UpdateProductDto updateProductDto = com.enterpriseassistant.product.dto.UpdateProductDto.builder()
+                .gtin("")
+                .name("Updated")
+                .priceNet(BigDecimal.valueOf(1000))
+                .additionalInformation("Updated information")
+                .build();
+        //when
+        //then
+        assertThrows(InvalidGtinNumberFormat.class, () -> productFacade.updateProduct(updateProductDto, 1));
+    }
+
+    @Test
+    void should_throw_exception_when_update_with_already_existing_gtin() {
+        //given
+        com.enterpriseassistant.product.dto.UpdateProductDto updateProductDto = com.enterpriseassistant.product.dto.UpdateProductDto.builder()
+                .gtin("0123456789012")
+                .name("Updated")
+                .priceNet(BigDecimal.valueOf(1000))
+                .additionalInformation("Updated information")
+                .build();
+        //when
+        //then
+        assertThrows(TakenGtin.class, () -> productFacade.updateProduct(updateProductDto, 1));
+    }
+
+    @Test
+    void should_update_product_properly() {
+        //given
+        UpdateProductDto updateProductDto = UpdateProductDto.builder()
+                .name("Updated")
+                .priceNet(BigDecimal.valueOf(1000))
+                .additionalInformation("Updated information")
+                .build();
+        //when
+        ProductDto productDto = productFacade.updateProduct(updateProductDto, 1);
+        //then
+        assertAll(
+                () -> assertEquals(updateProductDto.getName(), productDto.getName()),
+                () -> assertEquals(updateProductDto.getPriceNet().setScale(2, RoundingMode.HALF_EVEN), productDto.getPriceNet()),
+                () -> assertEquals(updateProductDto.getAdditionalInformation(), productDto.getAdditionalInformation())
+        );
     }
 }

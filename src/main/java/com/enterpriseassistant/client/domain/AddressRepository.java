@@ -1,6 +1,8 @@
 package com.enterpriseassistant.client.domain;
 
-interface AddressRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-    Address save(Address address);
+@Repository
+interface AddressRepository extends JpaRepository<Address, Integer> {
 }

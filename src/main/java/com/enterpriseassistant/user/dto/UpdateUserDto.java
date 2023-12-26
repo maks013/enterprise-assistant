@@ -8,6 +8,7 @@ import lombok.Getter;
 public class UpdateUserDto {
 
     private final String username;
+    private final String fullName;
     private final String email;
 
 }

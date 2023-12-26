@@ -1,19 +1,15 @@
 package com.enterpriseassistant.client.domain;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Optional;
 
-interface ClientRepository {
-
-    Client save(Client client);
+@Repository
+interface ClientRepository extends JpaRepository<Client, Integer> {
 
     boolean existsByTaxIdNumber(String taxIdNumber);
 
     Optional<Client> findByCompanyName(String companyName);
-
-    Optional<Client> findById(Integer id);
-
-    List<Client> findAll();
-
-    void delete(Client client);
 }

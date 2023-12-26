@@ -2,13 +2,16 @@ package com.enterpriseassistant.service.domain;
 
 import com.enterpriseassistant.service.dto.AddServiceDto;
 import com.enterpriseassistant.service.dto.ServiceDto;
+import com.enterpriseassistant.service.dto.UpdateServiceDto;
 import com.enterpriseassistant.service.exception.ServiceAlreadyExists;
 import com.enterpriseassistant.service.exception.ServiceNotFound;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 @AllArgsConstructor
 public class ServiceFacade {
 
@@ -43,6 +46,13 @@ public class ServiceFacade {
     public void deleteService(Integer id) {
         final Service service = getService(id);
         repository.delete(service);
+    }
+
+    public ServiceDto updateService(UpdateServiceDto updateServiceDto, int id) {
+        Service updatedService = serviceMapper.toUpdate(getService(id), updateServiceDto);
+        Service savedService = repository.save(updatedService);
+
+        return savedService.toDto();
     }
 
     private Service getService(Integer id) {

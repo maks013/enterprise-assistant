@@ -1,6 +1,8 @@
 package com.enterpriseassistant.client.domain;
 
-interface RepresentativeRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-    Representative save(Representative representative);
+@Repository
+interface RepresentativeRepository extends JpaRepository<Representative, Integer> {
 }

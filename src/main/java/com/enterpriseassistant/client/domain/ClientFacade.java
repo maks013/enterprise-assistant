@@ -1,18 +1,14 @@
 package com.enterpriseassistant.client.domain;
 
-import com.enterpriseassistant.client.dto.AddClientDto;
-import com.enterpriseassistant.client.dto.AddressDto;
-import com.enterpriseassistant.client.dto.ClientDto;
-import com.enterpriseassistant.client.dto.RepresentativeDto;
-import com.enterpriseassistant.client.exception.ClientNotFound;
-import com.enterpriseassistant.client.exception.ExistingTaxIdNumber;
-import com.enterpriseassistant.client.exception.InvalidPostalFormat;
-import com.enterpriseassistant.client.exception.InvalidTaxIdFormat;
+import com.enterpriseassistant.client.dto.*;
+import com.enterpriseassistant.client.exception.*;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 @AllArgsConstructor
 public class ClientFacade {
 
@@ -40,6 +36,11 @@ public class ClientFacade {
 
     public void deleteClientById(Integer id) {
         final Client client = getClient(id);
+        final Address address = getAddress(id);
+        final Representative representative = getRepresentative(id);
+
+        addressRepository.delete(address);
+        representativeRepository.delete(representative);
         clientRepository.delete(client);
     }
 
@@ -47,26 +48,48 @@ public class ClientFacade {
         validateTaxIdNumber(addClientDto.getTaxIdNumber());
         validatePostalCode(addClientDto.getAddress().getPostalCode());
 
-        Client client = clientMapper.fromAddDto(addClientDto);
+        Client client = clientRepository.save(clientMapper.fromAddDto(addClientDto));
 
-        final Client savedClient = clientRepository.save(client);
+        client.setAddress(createAddress(addClientDto.getAddress(), client.getId()));
+        client.setRepresentative(createRepresentative(addClientDto.getRepresentative(), client.getId()));
 
-        createAddress(addClientDto.getAddress(), savedClient.getId());
-        createRepresentative(addClientDto.getRepresentative(), savedClient.getId());
-
-        return savedClient.toDto();
+        return clientRepository.save(client).toDto();
     }
 
-    private void createAddress(AddressDto addressDto, int clientId) {
-        Address address = clientMapper.addressFromDto(addressDto);
-        address.setClientId(clientId);
-        addressRepository.save(address);
+    public ClientDto updateClient(UpdateClientDto updateClientDto, int id) {
+        if (!updateClientDto.getTaxIdNumber().isEmpty()) {
+            validateTaxIdNumber(updateClientDto.getTaxIdNumber());
+        }
+
+        Client updatedClient = clientMapper.toUpdate(getClient(id), updateClientDto);
+
+        return clientRepository.save(updatedClient).toDto();
     }
 
-    private void createRepresentative(RepresentativeDto representativeDto, int clientId) {
-        Representative representative = clientMapper.representativeFromDto(representativeDto);
-        representative.setClientId(clientId);
-        representativeRepository.save(representative);
+    public AddressDto updateAddress(UpdateAddressDto updateAddressDto, int id) {
+        if (!updateAddressDto.getPostalCode().isEmpty()) {
+            validatePostalCode(updateAddressDto.getPostalCode());
+        }
+
+        Address updatedAddress = clientMapper.toUpdate(getAddress(id), updateAddressDto);
+
+        return addressRepository.save(updatedAddress).toDto();
+    }
+
+    public RepresentativeDto updateRepresentative(UpdateRepresentativeDto updateRepresentativeDto, int id) {
+        Representative updatedRepresentative = clientMapper.toUpdate(getRepresentative(id), updateRepresentativeDto);
+
+        return representativeRepository.save(updatedRepresentative).toDto();
+    }
+
+    private Address createAddress(AddressDto addressDto, int clientId) {
+        Address address = clientMapper.addressFromDto(addressDto, clientId);
+        return addressRepository.save(address);
+    }
+
+    private Representative createRepresentative(RepresentativeDto representativeDto, int clientId) {
+        Representative representative = clientMapper.representativeFromDto(representativeDto, clientId);
+        return representativeRepository.save(representative);
     }
 
     private void validateTaxIdNumber(String taxIdNumber) {
@@ -87,5 +110,15 @@ public class ClientFacade {
     private Client getClient(Integer id) {
         return clientRepository.findById(id)
                 .orElseThrow(ClientNotFound::new);
+    }
+
+    private Address getAddress(Integer id) {
+        return addressRepository.findById(id)
+                .orElseThrow(AddressNotFound::new);
+    }
+
+    private Representative getRepresentative(Integer id) {
+        return representativeRepository.findById(id)
+                .orElseThrow(RepresentativeNotFound::new);
     }
 }

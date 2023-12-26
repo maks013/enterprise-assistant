@@ -1,18 +1,25 @@
 package com.enterpriseassistant.product.domain;
 
 import com.enterpriseassistant.product.dto.ProductDto;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Builder
 @Getter
 @Setter
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
 class Product {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String gtin;
     private String name;

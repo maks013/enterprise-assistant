@@ -4,10 +4,12 @@ import com.enterpriseassistant.user.exception.InvalidEmailFormat;
 import com.enterpriseassistant.user.exception.TakenEmail;
 import com.enterpriseassistant.user.exception.TakenUsername;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
 @RequiredArgsConstructor
 class UserDataValidator implements UserValidationService {
 

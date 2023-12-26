@@ -1,9 +1,16 @@
 package com.enterpriseassistant.user.domain;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
-interface UserRepository {
+@Repository
+interface UserRepository extends JpaRepository<User, Integer> {
 
     boolean existsByUsername(String username);
 
@@ -13,14 +20,9 @@ interface UserRepository {
 
     Optional<User> findByEmail(String email);
 
-    Optional<User> findById(Integer id);
-
-    void deleteById(Integer id);
-
-    User save(User user);
-
-    User enableAppUser(String email);
-
-    List<User> findAll();
+    @Transactional
+    @Modifying
+    @Query("UPDATE users a SET a.enabled = TRUE WHERE a.id = ?1")
+    void enableAppUser(Integer userId);
 }
 

@@ -1,23 +1,23 @@
 package com.enterpriseassistant.order.domain;
 
 import com.enterpriseassistant.order.dto.AddOrderDto;
-import com.enterpriseassistant.order.dto.AddProductOrderItemDto;
-import com.enterpriseassistant.order.dto.AddServiceOrderItemDto;
 import com.enterpriseassistant.order.dto.OrderDto;
+import com.enterpriseassistant.order.exception.InvalidOrderCreation;
 import com.enterpriseassistant.order.exception.OrderNotFound;
 import com.enterpriseassistant.user.domain.UserFacade;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 @AllArgsConstructor
 public class OrderFacade {
 
     private final UserFacade userFacade;
     private final OrderRepository orderRepository;
-    private final ProductOrderItemRepository productOrderItemRepository;
-    private final ServiceOrderItemRepository serviceOrderItemRepository;
     private final OrderMapper orderMapper;
 
     public List<OrderDto> findAllOrders() {
@@ -34,7 +34,7 @@ public class OrderFacade {
                 .collect(Collectors.toList());
     }
 
-    public OrderDto getOrderById(Integer id){
+    public OrderDto getOrderById(Integer id) {
         return getOrder(id).toDto();
     }
 
@@ -43,34 +43,18 @@ public class OrderFacade {
         orderRepository.delete(order);
     }
 
-    public OrderDto addNewOrder(AddOrderDto addOrderDto, String username){
+    @Transactional
+    public OrderDto addNewOrder(AddOrderDto addOrderDto, String username) {
         final int userId = userFacade.getUserByUsername(username).getId();
         Order order = orderMapper.fromAddDto(addOrderDto, userId);
 
-        saveProductOrderItems(addOrderDto.getProductOrderItems(), order.getId());
-        saveServiceOrderItems(addOrderDto.getServiceOrderItems(), order.getId());
-
-        return orderRepository.save(order).toDto();
-    }
-
-    private void saveProductOrderItems(List<AddProductOrderItemDto> productOrderItems, Integer orderId) {
-        if (productOrderItems != null) {
-            for (AddProductOrderItemDto addProductOrderItemDto : productOrderItems) {
-                ProductOrderItem productOrderItem = orderMapper.fromAddProductOrderItemDto(addProductOrderItemDto);
-                productOrderItem.setOrderId(orderId);
-                productOrderItemRepository.save(productOrderItem);
-            }
+        if (!order.isValidOrder()) {
+            throw new InvalidOrderCreation();
         }
-    }
 
-    private void saveServiceOrderItems(List<AddServiceOrderItemDto> serviceOrderItems, Integer orderId) {
-        if (serviceOrderItems != null) {
-            for (AddServiceOrderItemDto addServiceOrderItemDto : serviceOrderItems) {
-                ServiceOrderItem serviceOrderItem = orderMapper.fromAddServiceOrderItemDto(addServiceOrderItemDto);
-                serviceOrderItem.setOrderId(orderId);
-                serviceOrderItemRepository.save(serviceOrderItem);
-            }
-        }
+        Order savedOrder = orderRepository.save(order);
+
+        return savedOrder.toDto();
     }
 
     private Order getOrder(Integer id) {

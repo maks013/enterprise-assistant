@@ -4,12 +4,14 @@ import com.enterpriseassistant.order.dto.*;
 import com.enterpriseassistant.product.domain.ProductFacade;
 import com.enterpriseassistant.service.domain.ServiceFacade;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 @AllArgsConstructor
 class OrderMapper {
 
@@ -17,30 +19,31 @@ class OrderMapper {
     private final ServiceFacade serviceFacade;
 
     Order fromAddDto(AddOrderDto addOrderDto, int userId) {
-
-        List<ProductOrderItem> productOrderItems = (addOrderDto.getProductOrderItems() != null) ?
-                addOrderDto.getProductOrderItems().stream()
-                        .map(this::fromAddProductOrderItemDto)
-                        .collect(Collectors.toList()) :
-                Collections.emptyList();
-
-        List<ServiceOrderItem> serviceOrderItems = (addOrderDto.getServiceOrderItems() != null) ?
-                addOrderDto.getServiceOrderItems().stream()
-                        .map(this::fromAddServiceOrderItemDto)
-                        .collect(Collectors.toList()) :
-                Collections.emptyList();
-
-        return Order.builder()
+        Order order = Order.builder()
                 .createdAt(LocalDateTime.now())
                 .deadline(addOrderDto.getDeadline())
                 .status(Order.Status.PROCESSING)
                 .payment(addOrderDto.getPayment())
-                .productOrderItems(productOrderItems)
-                .serviceOrderItems(serviceOrderItems)
                 .userId(userId)
                 .clientId(addOrderDto.getClientId())
                 .additionalInformation(addOrderDto.getAdditionalInformation())
                 .build();
+
+        if (addOrderDto.getProductOrderItems() != null) {
+            addOrderDto.getProductOrderItems().forEach(productOrderItemDto -> {
+                ProductOrderItem productOrderItem = fromAddProductOrderItemDto(productOrderItemDto);
+                order.addProductOrderItem(productOrderItem);
+            });
+        }
+
+        if (addOrderDto.getServiceOrderItems() != null) {
+            addOrderDto.getServiceOrderItems().forEach(serviceOrderItemDto -> {
+                ServiceOrderItem serviceOrderItem = fromAddServiceOrderItemDto(serviceOrderItemDto);
+                order.addServiceOrderItem(serviceOrderItem);
+            });
+        }
+
+        return order;
     }
 
     ProductOrderItem fromAddProductOrderItemDto(AddProductOrderItemDto addProductOrderItemDto){

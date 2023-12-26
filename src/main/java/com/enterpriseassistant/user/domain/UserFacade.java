@@ -1,11 +1,9 @@
 package com.enterpriseassistant.user.domain;
 
-import com.enterpriseassistant.user.dto.RegistrationRequest;
-import com.enterpriseassistant.user.dto.UpdatePasswordDto;
-import com.enterpriseassistant.user.dto.UpdateUserDto;
-import com.enterpriseassistant.user.dto.UserDto;
+import com.enterpriseassistant.user.dto.*;
 import com.enterpriseassistant.user.exception.*;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,6 +13,8 @@ public class UserFacade {
 
     private final UserRepository userRepository;
     private final UserValidationService validationService;
+    private final BCryptPasswordEncoder bCryptEncoder;
+
 
     public UserDto registerUser(RegistrationRequest registrationRequest) {
         verifyAvailability(registrationRequest.getEmail(), registrationRequest.getUsername());
@@ -27,10 +27,30 @@ public class UserFacade {
         User user = User.builder()
                 .email(registrationRequest.getEmail())
                 .username(registrationRequest.getUsername())
-                .password(registrationRequest.getPassword())
+                .password(bCryptEncoder.encode(registrationRequest.getPassword()))
                 .fullName(registrationRequest.getFullName())
                 .role(User.Role.USER)
                 .enabled(false)
+                .build();
+
+        return userRepository.save(user).toDto();
+    }
+
+    public UserDto registerAdminForTest(RegistrationRequest registrationRequest) {
+        verifyAvailability(registrationRequest.getEmail(), registrationRequest.getUsername());
+        verifyEmailFormat(registrationRequest.getEmail());
+
+        if (registrationRequest.getFullName().isBlank()) {
+            throw new InvalidFullName();
+        }
+
+        User user = User.builder()
+                .email(registrationRequest.getEmail())
+                .username(registrationRequest.getUsername())
+                .password(bCryptEncoder.encode(registrationRequest.getPassword()))
+                .fullName(registrationRequest.getFullName())
+                .role(User.Role.ADMIN)
+                .enabled(true)
                 .build();
 
         return userRepository.save(user).toDto();
@@ -54,6 +74,12 @@ public class UserFacade {
                 .orElseThrow(UserNotFound::new);
     }
 
+    public UserDtoWithPassword getUserWithPasswordByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(User::toDtoWithPassword)
+                .orElseThrow(UserNotFound::new);
+    }
+
     public void deleteUser(Integer id, String username) {
         verifyUserOwnership(id, username);
         verifyUserEnabled(username);
@@ -65,7 +91,7 @@ public class UserFacade {
         verifyUserOwnership(id, username);
         verifyUserEnabled(username);
 
-        if (updateUserDto.getUsername().isBlank() && updateUserDto.getEmail().isBlank()) {
+        if (updateUserDto.getUsername().isBlank() && updateUserDto.getFullName().isBlank() && updateUserDto.getEmail().isBlank()) {
             throw new InvalidUpdate();
         }
 
@@ -101,14 +127,14 @@ public class UserFacade {
         userRepository.save(user);
     }
 
-    public UserDto enableUser(String email, String usernameOfAdmin) {
-        if(!isAdmin(usernameOfAdmin)){
+    public void enableUser(Integer userId, String usernameOfAdmin) {
+        if (!isAdmin(usernameOfAdmin)) {
             throw new UserNotEnabled();
         }
-        return userRepository.enableAppUser(email).toDto();
+        userRepository.enableAppUser(userId);
     }
 
-    private boolean isAdmin(String username){
+    private boolean isAdmin(String username) {
         return userRepository.findByUsername(username)
                 .map(user -> user.getRole().toString().equals("ADMIN"))
                 .orElseThrow(UserNotFound::new);

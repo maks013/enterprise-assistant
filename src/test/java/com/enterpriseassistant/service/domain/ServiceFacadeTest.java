@@ -1,15 +1,14 @@
 package com.enterpriseassistant.service.domain;
 
-import com.enterpriseassistant.product.dto.AddProductDto;
-import com.enterpriseassistant.product.dto.ProductDto;
-import com.enterpriseassistant.product.exception.ProductNotFound;
 import com.enterpriseassistant.service.dto.AddServiceDto;
 import com.enterpriseassistant.service.dto.ServiceDto;
+import com.enterpriseassistant.service.dto.UpdateServiceDto;
 import com.enterpriseassistant.service.exception.ServiceAlreadyExists;
 import com.enterpriseassistant.service.exception.ServiceNotFound;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -159,4 +158,35 @@ class ServiceFacadeTest {
         assertEquals(1, sizeBeforeDeleting - sizeAfterDeleting);
     }
 
+    @Test
+    void should_throw_exception_when_update_not_existing_service() {
+        //given
+        final int notExistingServiceId = 999;
+        UpdateServiceDto updateServiceDto = UpdateServiceDto.builder()
+                .name("Updated")
+                .priceNet(BigDecimal.valueOf(1000))
+                .additionalInformation("Updated information")
+                .build();
+        //when
+        //then
+        assertThrows(ServiceNotFound.class,()->serviceFacade.updateService(updateServiceDto, notExistingServiceId));
+    }
+
+    @Test
+    void should_update_service_properly() {
+        //given
+        UpdateServiceDto updateServiceDto = UpdateServiceDto.builder()
+                .name("Updated")
+                .priceNet(BigDecimal.valueOf(1000))
+                .additionalInformation("Updated information")
+                .build();
+        //when
+        ServiceDto serviceDto = serviceFacade.updateService(updateServiceDto, 1);
+        //then
+        assertAll(
+                () -> assertEquals(updateServiceDto.getName(),serviceDto.getName()),
+                () -> assertEquals(updateServiceDto.getPriceNet().setScale(2, RoundingMode.HALF_EVEN),serviceDto.getPriceNet()),
+                () -> assertEquals(updateServiceDto.getAdditionalInformation(),serviceDto.getAdditionalInformation())
+        );
+    }
 }
