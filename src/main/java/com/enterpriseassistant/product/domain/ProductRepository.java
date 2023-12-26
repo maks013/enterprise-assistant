@@ -1,22 +1,16 @@
 package com.enterpriseassistant.product.domain;
 
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.Optional;
 
-interface ProductRepository {
-
-    Product save(Product product);
+@Repository
+interface ProductRepository extends JpaRepository<Product, Integer> {
 
     Optional<Product> findByName(String name);
 
     Optional<Product> findByGtin(String gtin);
 
-    Optional<Product> findById(Integer id);
-
-    List<Product> findAll();
-
     boolean existsByGtin(String gtin);
-
-    void delete(Product product);
-
 }
