@@ -1,9 +1,6 @@
 package com.enterpriseassistant.client.domain;
 
-import com.enterpriseassistant.client.dto.AddClientDto;
-import com.enterpriseassistant.client.dto.AddressDto;
-import com.enterpriseassistant.client.dto.ClientDto;
-import com.enterpriseassistant.client.dto.RepresentativeDto;
+import com.enterpriseassistant.client.dto.*;
 import com.enterpriseassistant.client.exception.ClientNotFound;
 import com.enterpriseassistant.client.exception.InvalidPostalFormat;
 import com.enterpriseassistant.client.exception.InvalidTaxIdFormat;
@@ -132,4 +129,45 @@ class ClientFacadeTest {
                 "Invalid format of postal code");
     }
 
+    @Test
+    void should_update_client_successfully() {
+        //given
+        final UpdateClientDto updateClientDto = UpdateClientDto.builder()
+                .taxIdNumber("")
+                .companyName("Updated Company Name")
+                .build();
+        //when
+        ClientDto clientDto = clientFacade.updateClient(updateClientDto, 1);
+        //then
+        assertEquals(updateClientDto.getCompanyName(), clientDto.getCompanyName());
+    }
+
+    @Test
+    void should_update_address_successfully() {
+        //given
+        final UpdateAddressDto updateAddressDto = UpdateAddressDto.builder()
+                .postalCode("")
+                .city("Updated")
+                .street("")
+                .build();
+        //when
+        AddressDto addressDto = clientFacade.updateAddress(updateAddressDto, 1);
+        //then
+        assertEquals(updateAddressDto.getCity(), addressDto.getCity());
+    }
+
+    @Test
+    void should_update_representative_successfully() {
+        //given
+        final UpdateRepresentativeDto updateRepresentativeDto = UpdateRepresentativeDto.builder()
+                .name("Updated Name")
+                .surname("")
+                .phoneNumber("")
+                .email("")
+                .build();
+        //when
+        RepresentativeDto representativeDto = clientFacade.updateRepresentative(updateRepresentativeDto, 1);
+        //then
+        assertEquals(updateRepresentativeDto.getName(), representativeDto.getName());
+    }
 }
