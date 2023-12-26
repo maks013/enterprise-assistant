@@ -1,20 +1,14 @@
 package com.enterpriseassistant.service.domain;
 
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.Optional;
 
-interface ServiceRepository {
-
-    Service save(Service service);
+@Repository
+interface ServiceRepository extends JpaRepository<Service, Integer> {
 
     Optional<Service> findByName(String name);
 
-    Optional<Service> findById(Integer id);
-
-    List<Service> findAll();
-
     boolean existsByName(String name);
-
-    void delete(Service service);
-
 }
