@@ -5,10 +5,9 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class UpdateUserDto {
+public class LoginResponseDto {
 
     private final String username;
-    private final String fullName;
-    private final String email;
+    private final String token;
 
 }

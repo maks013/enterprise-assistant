@@ -6,6 +6,7 @@ import com.enterpriseassistant.user.dto.UpdateUserDto;
 import com.enterpriseassistant.user.dto.UserDto;
 import com.enterpriseassistant.user.exception.*;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,7 +16,8 @@ class UserFacadeTest {
 
     private final UserFacade userFacade = new UserFacade(
             inMemoryUserRepository,
-            new UserDataValidator(inMemoryUserRepository));
+            new UserDataValidator(inMemoryUserRepository),
+            new BCryptPasswordEncoder());
 
     @Test
     void should_throw_exception_when_registering_with_invalid_email_format() {
@@ -220,6 +222,7 @@ class UserFacadeTest {
         UpdateUserDto updateUserDto = UpdateUserDto.builder()
                 .username(usernameAfter)
                 .email(emailAfter)
+                .fullName("")
                 .build();
         //when
         userFacade.updateUser(1, updateUserDto, usernameBefore);
@@ -239,6 +242,7 @@ class UserFacadeTest {
         UpdateUserDto updateUserDto = UpdateUserDto.builder()
                 .username("")
                 .email(invalidEmailExample)
+                .fullName("")
                 .build();
         //then
         assertThrows(InvalidEmailFormat.class, () -> userFacade.updateUser(1, updateUserDto, "admin"));
@@ -254,6 +258,7 @@ class UserFacadeTest {
         UpdateUserDto updateUserDto = UpdateUserDto.builder()
                 .username("")
                 .email(takenEmail)
+                .fullName("")
                 .build();
         //then
         assertThrows(TakenEmail.class, () -> userFacade.updateUser(userId, updateUserDto, username));
@@ -344,9 +349,10 @@ class UserFacadeTest {
                 .build();
         //when
         userFacade.registerUser(registrationRequest);
-        UserDto userDto = userFacade.enableUser("email@someEmail.com", usernameOfAdmin);
+        userFacade.enableUser(3, usernameOfAdmin);
+
         //then
-        assertTrue(userDto.getEnabled());
+        assertTrue(userFacade.getUserByUsername(registrationRequest.getUsername()).getEnabled());
     }
 
     @Test
@@ -362,6 +368,6 @@ class UserFacadeTest {
         //when
         userFacade.registerUser(registrationRequest);
         //then
-        assertThrows(UserNotEnabled.class, () -> userFacade.enableUser("email@someEmail.com", usernameOfDefaultUser));
+        assertThrows(UserNotEnabled.class, () -> userFacade.enableUser(3, usernameOfDefaultUser));
     }
 }
