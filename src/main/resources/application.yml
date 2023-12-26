@@ -1,0 +1,14 @@
+spring:
+  h2.console:
+    enabled: true
+    path: '/console'
+  datasource:
+    url: jdbc:h2:file:./enterprise-assistant-db
+  jpa.hibernate:
+    ddl-auto: update
+
+auth:
+  jwt:
+    expirationDays: 30
+    secret: ${USER_SECRET}
+    issuer: enterprise-assistant-service
