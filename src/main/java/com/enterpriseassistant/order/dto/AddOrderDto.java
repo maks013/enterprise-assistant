@@ -1,5 +1,6 @@
 package com.enterpriseassistant.order.dto;
 
+import com.enterpriseassistant.order.domain.DaysToPay;
 import com.enterpriseassistant.order.domain.Payment;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +17,7 @@ public class AddOrderDto {
     private List<AddServiceOrderItemDto> serviceOrderItems;
     private LocalDateTime deadline;
     private Payment payment;
+    private DaysToPay daysToPay;
     private String additionalInformation;
 
 }

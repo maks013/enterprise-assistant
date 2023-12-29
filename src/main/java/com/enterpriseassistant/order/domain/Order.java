@@ -35,6 +35,9 @@ class Order {
     private Payment payment;
 
     @Enumerated(EnumType.STRING)
+    private DaysToPay daysToPay;
+
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
@@ -86,6 +89,7 @@ class Order {
                 .createdAt(createdAt)
                 .deadline(deadline)
                 .payment(payment.toString())
+                .daysToPay(daysToPay)
                 .status(status.toString())
                 .productOrderItems(productOrderItemDtos)
                 .serviceOrderItems(serviceOrderItemDtos)
