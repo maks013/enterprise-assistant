@@ -24,6 +24,7 @@ class OrderMapper {
                 .deadline(addOrderDto.getDeadline())
                 .status(Order.Status.PROCESSING)
                 .payment(addOrderDto.getPayment())
+                .daysToPay(addOrderDto.getDaysToPay())
                 .userId(userId)
                 .clientId(addOrderDto.getClientId())
                 .additionalInformation(addOrderDto.getAdditionalInformation())
@@ -49,6 +50,7 @@ class OrderMapper {
     ProductOrderItem fromAddProductOrderItemDto(AddProductOrderItemDto addProductOrderItemDto){
         return ProductOrderItem.builder()
                 .productId(addProductOrderItemDto.getProductId())
+                .name(productFacade.getProductById(addProductOrderItemDto.getProductId()).getName())
                 .quantity(addProductOrderItemDto.getQuantity())
                 .unitPriceGross(productFacade.getProductById(addProductOrderItemDto.getProductId()).getPriceGross())
                 .unitPriceNet(productFacade.getProductById(addProductOrderItemDto.getProductId()).getPriceNet())
@@ -58,6 +60,7 @@ class OrderMapper {
     ServiceOrderItem fromAddServiceOrderItemDto(AddServiceOrderItemDto addServiceOrderItemDto){
         return ServiceOrderItem.builder()
                 .serviceId(addServiceOrderItemDto.getServiceId())
+                .name(serviceFacade.getServiceById(addServiceOrderItemDto.getServiceId()).getName())
                 .quantity(addServiceOrderItemDto.getQuantity())
                 .unitPriceGross(serviceFacade.getServiceById(addServiceOrderItemDto.getServiceId()).getPriceGross())
                 .unitPriceNet(serviceFacade.getServiceById(addServiceOrderItemDto.getServiceId()).getPriceNet())

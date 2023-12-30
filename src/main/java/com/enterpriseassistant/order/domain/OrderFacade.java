@@ -3,6 +3,7 @@ package com.enterpriseassistant.order.domain;
 import com.enterpriseassistant.order.dto.AddOrderDto;
 import com.enterpriseassistant.order.dto.OrderDto;
 import com.enterpriseassistant.order.exception.InvalidOrderCreation;
+import com.enterpriseassistant.order.exception.InvalidStatusUpdate;
 import com.enterpriseassistant.order.exception.OrderNotFound;
 import com.enterpriseassistant.user.domain.UserFacade;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,20 @@ public class OrderFacade {
         return getOrder(id).toDto();
     }
 
+    @Transactional
+    public OrderDto changeOrderStatus(Integer id, String newStatus) {
+        Order order = getOrder(id);
+        Order.Status status = validateAndConvertStatus(newStatus);
+
+        if (order.getStatus() == status) {
+            throw new InvalidStatusUpdate();
+        }
+
+        order.setStatus(status);
+
+        return orderRepository.save(order).toDto();
+    }
+
     public void deleteOrder(Integer id) {
         final Order order = getOrder(id);
         orderRepository.delete(order);
@@ -60,5 +75,13 @@ public class OrderFacade {
     private Order getOrder(Integer id) {
         return orderRepository.findById(id)
                 .orElseThrow(OrderNotFound::new);
+    }
+
+    private Order.Status validateAndConvertStatus(String statusStr) {
+        try {
+            return Order.Status.valueOf(statusStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidStatusUpdate();
+        }
     }
 }
