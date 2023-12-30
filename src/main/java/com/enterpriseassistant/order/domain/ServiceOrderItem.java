@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Entity
+@Table(name = "service_order_items")
 @AllArgsConstructor
 @NoArgsConstructor
 class ServiceOrderItem {
