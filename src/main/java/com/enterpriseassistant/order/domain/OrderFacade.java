@@ -58,7 +58,6 @@ public class OrderFacade {
         orderRepository.delete(order);
     }
 
-    @Transactional
     public OrderDto addNewOrder(AddOrderDto addOrderDto, String username) {
         final int userId = userFacade.getUserByUsername(username).getId();
         Order order = orderMapper.fromAddDto(addOrderDto, userId);
