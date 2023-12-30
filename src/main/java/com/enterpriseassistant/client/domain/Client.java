@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
+@Table(name = "clients")
 @AllArgsConstructor
 @NoArgsConstructor
 class Client {
