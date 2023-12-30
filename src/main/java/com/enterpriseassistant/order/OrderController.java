@@ -3,6 +3,7 @@ package com.enterpriseassistant.order;
 import com.enterpriseassistant.order.domain.OrderFacade;
 import com.enterpriseassistant.order.dto.AddOrderDto;
 import com.enterpriseassistant.order.dto.OrderDto;
+import com.enterpriseassistant.order.dto.OrderStatusDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderDto>> findAllProducts() {
+    public ResponseEntity<List<OrderDto>> findAllOrders() {
         return ResponseEntity.status(HttpStatus.OK).body(orderFacade.findAllOrders());
     }
 
@@ -41,11 +42,17 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(orderFacade.getOrderById((id)));
     }
 
+    @PatchMapping("/status/{id}")
+    public ResponseEntity<OrderDto> changeOrderStatus(@PathVariable Integer id,
+                                                      @RequestBody OrderStatusDto orderStatusDto) {
+        OrderDto orderDto = orderFacade.changeOrderStatus(id, orderStatusDto.getStatus());
+        return ResponseEntity.status(HttpStatus.OK).body(orderDto);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOrder(@PathVariable Integer id) {
         orderFacade.deleteOrder(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
 
 }
