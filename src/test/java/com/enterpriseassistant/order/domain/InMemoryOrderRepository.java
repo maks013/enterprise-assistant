@@ -23,14 +23,17 @@ class InMemoryOrderRepository implements OrderRepository {
     List<ProductOrderItem> listOfProductItem1 = new ArrayList<>();
     List<ServiceOrderItem> listOfServiceItem1 = new ArrayList<>();
 
-    final Order order1 = new Order(1, LocalDateTime.now(), LocalDateTime.now().plusDays(15),Payment.CASH, Order.Status.PROCESSING,
+    Order order1 = new Order(1, LocalDateTime.now(), LocalDateTime.now().plusDays(15), Payment.CASH, DaysToPay.SEVEN, Order.Status.PROCESSING,
             listOfProductItem1, listOfServiceItem1, 1, 1, "Additional Information");
 
-    ProductOrderItem productOrderItem1 = new ProductOrderItem(1, order1, new BigDecimal("10.00"), new BigDecimal("12.30"), 2, 101);
-    ProductOrderItem productOrderItem2 = new ProductOrderItem(2, order1, new BigDecimal("10.00"), new BigDecimal("12.30"), 1, 102);
+    Order order2 = new Order(2, LocalDateTime.now(), LocalDateTime.now().plusDays(15), Payment.CASH, DaysToPay.SEVEN, Order.Status.PROCESSING,
+            listOfProductItem1, null, 1, 1, "Additional Information");
 
-    ServiceOrderItem serviceOrderItem1 = new ServiceOrderItem(1, order1, new BigDecimal("20.00"), new BigDecimal("24.60"), 3, 201);
-    ServiceOrderItem serviceOrderItem2 = new ServiceOrderItem(2, order1, new BigDecimal("20.00"), new BigDecimal("24.60"), 1, 202);
+    ProductOrderItem productOrderItem1 = new ProductOrderItem(1, order1, new BigDecimal("10.00"), new BigDecimal("12.30"), 2, "Product Example", 101);
+    ProductOrderItem productOrderItem2 = new ProductOrderItem(2, order1, new BigDecimal("10.00"), new BigDecimal("12.30"), 1, "Product Example 2", 102);
+
+    ServiceOrderItem serviceOrderItem1 = new ServiceOrderItem(1, order1, new BigDecimal("20.00"), new BigDecimal("24.60"), 3, "Service Example", 201);
+    ServiceOrderItem serviceOrderItem2 = new ServiceOrderItem(2, order1, new BigDecimal("20.00"), new BigDecimal("24.60"), 1, "Service Example 2", 202);
 
     public InMemoryOrderRepository() {
         listOfProductItem1.add(productOrderItem1);
@@ -40,13 +43,14 @@ class InMemoryOrderRepository implements OrderRepository {
         listOfServiceItem1.add(serviceOrderItem2);
 
         inMemoryOrders.put(1, order1);
+        inMemoryOrders.put(2, order2);
     }
 
     @Override
     public Order save(Order order) {
-        final int newOrderId = 2;
+        final int newOrderId = 3;
         order.setId(newOrderId);
-        inMemoryOrders.put(newOrderId,order);
+        inMemoryOrders.put(newOrderId, order);
         return inMemoryOrders.get(newOrderId);
     }
 
