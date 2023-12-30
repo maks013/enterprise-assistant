@@ -3,10 +3,7 @@ package com.enterpriseassistant.service.domain;
 import com.enterpriseassistant.service.dto.ServiceDto;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -14,6 +11,7 @@ import java.math.RoundingMode;
 @Getter
 @Setter
 @Entity
+@Table(name = "services")
 @AllArgsConstructor
 @NoArgsConstructor
 class Service {
