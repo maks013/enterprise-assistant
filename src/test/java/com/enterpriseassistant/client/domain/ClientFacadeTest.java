@@ -10,10 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ClientFacadeTest {
 
-    ClientFacade clientFacade = new ClientFacade(new InMemoryAddressRepository(),
-            new InMemoryRepresentativeRepository(),
-            new InMemoryClientRepository(),
-            new ClientMapper());
+    ClientFacadeConfigForTests clientFacadeConfigForTests = new ClientFacadeConfigForTests();
+    ClientFacade clientFacade = clientFacadeConfigForTests.clientFacade();
 
     @Test
     void should_findAll_offers_with_size_2() {

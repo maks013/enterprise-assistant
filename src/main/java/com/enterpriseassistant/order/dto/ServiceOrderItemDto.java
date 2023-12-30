@@ -11,6 +11,7 @@ public class ServiceOrderItemDto {
 
     private final Integer id;
     private final Integer orderId;
+    private final String name;
     private final BigDecimal unitPriceGross;
     private final BigDecimal unitPriceNet;
     private final Integer quantity;

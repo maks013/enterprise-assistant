@@ -26,6 +26,8 @@ class ServiceOrderItem {
     private BigDecimal unitPriceNet;
     private Integer quantity;
 
+    private String name;
+
     @Column(name = "service_id")
     private Integer serviceId;
 
@@ -35,6 +37,7 @@ class ServiceOrderItem {
         return ServiceOrderItemDto.builder()
                 .id(id)
                 .orderId(orderId)
+                .name(name)
                 .unitPriceGross(unitPriceGross)
                 .unitPriceNet(unitPriceNet)
                 .quantity(quantity)

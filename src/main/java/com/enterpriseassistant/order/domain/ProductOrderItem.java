@@ -26,6 +26,8 @@ class ProductOrderItem {
     private BigDecimal unitPriceNet;
     private Integer quantity;
 
+    private String name;
+
     @Column(name = "product_id")
     private Integer productId;
 
@@ -34,6 +36,7 @@ class ProductOrderItem {
         return ProductOrderItemDto.builder()
                 .id(id)
                 .orderId(orderId)
+                .name(name)
                 .unitPriceGross(unitPriceGross)
                 .unitPriceNet(unitPriceNet)
                 .quantity(quantity)
