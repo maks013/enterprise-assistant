@@ -3,6 +3,7 @@ package com.enterpriseassistant.user.domain;
 import com.enterpriseassistant.user.dto.*;
 import com.enterpriseassistant.user.exception.*;
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
@@ -77,7 +78,7 @@ public class UserFacade {
     public UserDtoWithPassword getUserWithPasswordByUsername(String username) {
         return userRepository.findByUsername(username)
                 .map(User::toDtoWithPassword)
-                .orElseThrow(UserNotFound::new);
+                .orElseThrow(() -> new BadCredentialsException("User not found"));
     }
 
     public void deleteUser(Integer id, String username) {

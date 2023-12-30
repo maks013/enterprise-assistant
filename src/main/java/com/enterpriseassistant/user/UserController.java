@@ -35,55 +35,30 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Integer id,
                                         Principal principal) {
-        try {
-            userFacade.deleteUser(id, principal.getName());
-            return ResponseEntity.noContent().build();
-        } catch (UserNotFound exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (InvalidUserId exception) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        userFacade.deleteUser(id, principal.getName());
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUserData(@PathVariable Integer id,
                                             @RequestBody UpdateUserDto updateUserDto,
                                             Principal principal) {
-        try {
-            userFacade.updateUser(id, updateUserDto, principal.getName());
-            return ResponseEntity.ok().build();
-        } catch (UserNotFound e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (TakenEmail | TakenUsername |
-                InvalidEmailFormat | InvalidUserId | InvalidUpdate exception) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-        } catch (UserNotEnabled exception) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        userFacade.updateUser(id, updateUserDto, principal.getName());
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/update-password/{id}")
     public ResponseEntity<?> updateUserPassword(@PathVariable Integer id,
                                                 @RequestBody UpdatePasswordDto updatePasswordDto,
                                                 Principal principal) {
-        try {
-            userFacade.updatePassword(id, updatePasswordDto, principal.getName());
-            return ResponseEntity.ok().build();
-        } catch (UserNotFound exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (IncorrectPassword exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+        userFacade.updatePassword(id, updatePasswordDto, principal.getName());
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/enable/{id}")
     public ResponseEntity<?> enableUser(@PathVariable Integer id,
                                         Principal principal) {
-        try {
-            userFacade.enableUser(id, principal.getName());
-        } catch (UserNotEnabled exception) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        userFacade.enableUser(id, principal.getName());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

@@ -35,21 +35,13 @@ public class LoginAndRegisterController {
 
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@Valid @RequestBody RegistrationRequest registrationRequest) {
-        try {
-            UserDto userDto = userFacade.registerUser(registrationRequest);
-            return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
-        } catch (InvalidEmailFormat | TakenEmail | TakenUsername exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+        UserDto userDto = userFacade.registerUser(registrationRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
     }
 
     @PostMapping("/register-admin")
     public ResponseEntity<UserDto> registerAdmin(@Valid @RequestBody RegistrationRequest registrationRequest) {
-        try {
-            UserDto userDto = userFacade.registerAdminForTest(registrationRequest);
-            return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
-        } catch (InvalidEmailFormat | TakenEmail | TakenUsername exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+        UserDto userDto = userFacade.registerAdminForTest(registrationRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
     }
 }
