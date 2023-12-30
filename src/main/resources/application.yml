@@ -1,11 +1,16 @@
 spring:
-  h2.console:
-    enabled: true
-    path: '/console'
   datasource:
-    url: jdbc:h2:file:./enterprise-assistant-db
-  jpa.hibernate:
-    ddl-auto: update
+    url: jdbc:postgresql://localhost:5332/assistant
+    username: user
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
