@@ -3,10 +3,7 @@ package com.enterpriseassistant.product.domain;
 import com.enterpriseassistant.product.dto.ProductDto;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -14,6 +11,7 @@ import java.math.RoundingMode;
 @Getter
 @Setter
 @Entity
+@Table(name = "products")
 @AllArgsConstructor
 @NoArgsConstructor
 class Product {

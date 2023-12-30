@@ -3,15 +3,13 @@ package com.enterpriseassistant.client.domain;
 import com.enterpriseassistant.client.dto.AddressDto;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Builder
 @Getter
 @Setter
-@Entity(name = "clients_addresses")
+@Entity
+@Table(name = "clients_addresses")
 @AllArgsConstructor
 @NoArgsConstructor
 class Address {
