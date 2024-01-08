@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 class Order {
 
     enum Status {
-        PROCESSING, COMPLETED, CANCELLED
+        PROCESSING, COMPLETED, CANCELED
     }
 
     @Id
