@@ -36,11 +36,6 @@ public class ClientFacade {
 
     public void deleteClientById(Integer id) {
         final Client client = getClient(id);
-        final Address address = getAddress(id);
-        final Representative representative = getRepresentative(id);
-
-        addressRepository.delete(address);
-        representativeRepository.delete(representative);
         clientRepository.delete(client);
     }
 

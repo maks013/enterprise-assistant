@@ -42,8 +42,13 @@ public class ClientController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ClientDto>> findAllProducts() {
+    public ResponseEntity<List<ClientDto>> findAllClients() {
         return ResponseEntity.status(HttpStatus.OK).body(clientFacade.findAllClients());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ClientDto> findClientById(@PathVariable Integer id) {
+        return ResponseEntity.status(HttpStatus.OK).body(clientFacade.getClientById(id));
     }
 
     @GetMapping("/byName/{companyName}")

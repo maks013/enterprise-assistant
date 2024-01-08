@@ -31,7 +31,7 @@ class OrderFacadeTest {
     @Test
     void should_find_all_orders_by_year() {
         //given
-        final int size = orderFacade.findAllOrdersByYear(2023).size();
+        final int size = orderFacade.findAllOrdersByYear(LocalDateTime.now().getYear()).size();
         //when
         //then
         assertEquals(2, size);
