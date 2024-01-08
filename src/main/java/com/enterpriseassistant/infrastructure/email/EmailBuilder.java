@@ -8,7 +8,7 @@ class EmailBuilder {
                 + "<p>Dzień dobry " + clientName + ",</p>"
                 + "<p>W załączeniu znajduje się faktura: " + invoiceNumber + ".</p>"
                 + "<p>Z poważaniem,</p>"
-                + "<p>LuxeCraft Creations</p>"
+                + "<p>Example Sp. z o.o.</p>"
                 + "</div>";
     }
 
