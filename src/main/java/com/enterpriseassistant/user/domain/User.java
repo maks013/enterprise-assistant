@@ -51,6 +51,7 @@ class User implements UserDetails {
         return UserDtoWithPassword.builder()
                 .id(id)
                 .username(username)
+                .fullName(fullName)
                 .email(email)
                 .password(password)
                 .enabled(enabled)
