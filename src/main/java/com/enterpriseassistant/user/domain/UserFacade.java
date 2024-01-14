@@ -82,9 +82,10 @@ public class UserFacade {
     }
 
     public void deleteUser(Integer id, String username) {
-        verifyUserOwnership(id, username);
-        verifyUserEnabled(username);
-
+        if (!isAdmin(username)) {
+            verifyUserOwnership(id, username);
+            verifyUserEnabled(username);
+        }
         userRepository.deleteById(id);
     }
 
