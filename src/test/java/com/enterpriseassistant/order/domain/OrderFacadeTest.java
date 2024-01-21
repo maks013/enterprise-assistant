@@ -82,8 +82,10 @@ class OrderFacadeTest {
     void should_add_new_order_successfully() {
         //given
         final String username = "user2";
-        AddProductOrderItemDto addProductOrderItemDto = AddProductOrderItemDto.builder().quantity(3).productId(1).build();
-        AddServiceOrderItemDto addServiceOrderItemDto = AddServiceOrderItemDto.builder().quantity(5).serviceId(1).build();
+        AddProductOrderItemDto addProductOrderItemDto = AddProductOrderItemDto.builder()
+                .quantity(3).productId(1).build();
+        AddServiceOrderItemDto addServiceOrderItemDto = AddServiceOrderItemDto.builder()
+                .quantity(5).serviceId(1).build();
 
         List<AddProductOrderItemDto> addProductOrderItemDtos = new ArrayList<>();
         List<AddServiceOrderItemDto> addServiceOrderItemDtos = new ArrayList<>();
@@ -96,6 +98,7 @@ class OrderFacadeTest {
                 .productOrderItems(addProductOrderItemDtos)
                 .serviceOrderItems(addServiceOrderItemDtos)
                 .payment(Payment.TRANSFER)
+                .daysToPay(DaysToPay.SEVEN)
                 .deadline(LocalDateTime.now().plusDays(1))
                 .additionalInformation("New Order")
                 .build();

@@ -82,6 +82,7 @@ public class UserFacade {
     }
 
     public void deleteUser(Integer id, String username) {
+        verifyIdIsNotNull(id);
         if (!isAdmin(username)) {
             verifyUserOwnership(id, username);
             verifyUserEnabled(username);
@@ -154,7 +155,7 @@ public class UserFacade {
     private void verifyUserOwnership(Integer id, String username) {
         final int userId = getUserByUsername(username).getId();
 
-        if (id == null || userId != id) {
+        if (userId != id) {
             throw new InvalidUserId();
         }
     }
@@ -165,4 +166,9 @@ public class UserFacade {
         }
     }
 
+    private void verifyIdIsNotNull(Integer id) {
+        if (id == null) {
+            throw new InvalidUserId();
+        }
+    }
 }
