@@ -30,6 +30,13 @@ public class ExceptionHandlingAdvice {
         return new ErrorResponse("Bad Credentials", HttpStatus.UNAUTHORIZED);
     }
 
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(NotActiveAccount.class)
+    @ResponseBody
+    public ErrorResponse handleNotActiveAccount() {
+        return new ErrorResponse("Account is not active", HttpStatus.UNAUTHORIZED);
+    }
+
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler(UserNotEnabled.class)
     @ResponseBody
