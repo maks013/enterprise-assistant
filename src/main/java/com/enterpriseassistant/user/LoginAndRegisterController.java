@@ -33,13 +33,8 @@ public class LoginAndRegisterController {
     @PostMapping("/login")
     @ApiOperation(value = "Umożliwia logowanie")
     public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
-        boolean enabled = userFacade.getUserWithPasswordByUsername(loginRequestDto.getUsername()).getEnabled();
-        if (enabled) {
-            final LoginResponseDto loginResponseDto = jwtAuthenticator.authenticate(loginRequestDto);
-            return ResponseEntity.ok(loginResponseDto);
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        final LoginResponseDto loginResponseDto = jwtAuthenticator.authenticate(loginRequestDto);
+        return ResponseEntity.ok(loginResponseDto);
     }
 
     @PostMapping("/register")

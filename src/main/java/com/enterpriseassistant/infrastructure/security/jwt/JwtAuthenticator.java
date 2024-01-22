@@ -3,8 +3,10 @@ package com.enterpriseassistant.infrastructure.security.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.enterpriseassistant.infrastructure.security.jwt.properties.JwtConfigurationProperties;
+import com.enterpriseassistant.user.domain.UserFacade;
 import com.enterpriseassistant.user.dto.LoginRequestDto;
 import com.enterpriseassistant.user.dto.LoginResponseDto;
+import com.enterpriseassistant.user.exception.NotActiveAccount;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,8 +23,12 @@ public class JwtAuthenticator {
     private final AuthenticationManager authenticationManager;
     private final Clock clock;
     private final JwtConfigurationProperties properties;
+    private final UserFacade userFacade;
 
     public LoginResponseDto authenticate(LoginRequestDto loginRequest) {
+        if(userFacade.getUserWithPasswordByUsername(loginRequest.getUsername()).getEnabled().equals(false)){
+            throw new NotActiveAccount();
+        }
         Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         User user = (User) authenticate.getPrincipal();
