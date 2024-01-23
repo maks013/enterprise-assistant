@@ -22,9 +22,8 @@ public class UserWantToAddOrderScenarioIntegrationTest extends BaseIntegrationTe
     @Test
     void user_should_add_new_order_all_steps() throws Exception {
 
-        //0. Admin registers and receives 201 response. adminLoginData
-        //given
-        //when
+        //0. Admin registers and receives 201 response.
+        //given, when
         ResultActions adminRegisterRequest = mockMvc.perform(post("/auth/register-admin")
                 .content(adminRegisteringData().trim())
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
@@ -47,9 +46,9 @@ public class UserWantToAddOrderScenarioIntegrationTest extends BaseIntegrationTe
 
         final String adminToken = adminLoginResponseDto.getToken();
 
-        //1. The user attempts to obtain a JWT token by sending a POST request. The system returns an error 401.
-        //given
-        //when
+        //1. The user attempts to obtain a JWT token by sending a POST request.
+        //   The system returns an error 401.
+        //given, when
         ResultActions failedLoginRequest = mockMvc.perform(post("/auth/login")
                 .content(userLoginData().trim())
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
@@ -69,8 +68,7 @@ public class UserWantToAddOrderScenarioIntegrationTest extends BaseIntegrationTe
         UserDto registerUserDto = objectMapper.readValue(registerUserBody, UserDto.class);
 
         //3. The user try to log in with not active account
-        //given
-        //when
+        //given, when
         ResultActions loginBeforeActivation = mockMvc.perform(post("/auth/login")
                 .content(userLoginData().trim())
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
@@ -81,8 +79,7 @@ public class UserWantToAddOrderScenarioIntegrationTest extends BaseIntegrationTe
 
 
         //4. Admin activates user account with response 200.
-        //given
-        //when
+        //given, when
         ResultActions userAccountActivationByAdmin = mockMvc.perform(patch("/users/enable/" + registerUserDto.getId())
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType(MediaType.APPLICATION_JSON));
@@ -90,8 +87,7 @@ public class UserWantToAddOrderScenarioIntegrationTest extends BaseIntegrationTe
         userAccountActivationByAdmin.andExpect(status().isOk());
 
         //5. The user tries to obtain a token again with the data username=user, password=password. The system returns a token with a 200 status.
-        //given
-        //when
+        //given, when
         ResultActions userLoginSuccessfully = mockMvc.perform(post("/auth/login")
                 .content(userLoginData().trim())
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
@@ -102,9 +98,8 @@ public class UserWantToAddOrderScenarioIntegrationTest extends BaseIntegrationTe
 
         final String userToken = loginUserResponse.getToken();
 
-        //6. User add new client and receives 201.
-        //given
-        //when
+        //6. User add new client and receives isCreated.
+        //given, when
         ResultActions addingNewClient = mockMvc.perform(post("/clients")
                 .header("Authorization", "Bearer " + userToken)
                 .content(clientDataExample().trim())
@@ -112,9 +107,8 @@ public class UserWantToAddOrderScenarioIntegrationTest extends BaseIntegrationTe
         //then
         addingNewClient.andExpect(status().isCreated());
 
-        //7. User add new product and receives 201.
-        //given
-        //when
+        //7. User add new product and receives isCreated.
+        //given, when
         ResultActions addingNewProduct = mockMvc.perform(post("/products")
                 .header("Authorization", "Bearer " + userToken)
                 .content(productDataExample().trim())
@@ -122,9 +116,8 @@ public class UserWantToAddOrderScenarioIntegrationTest extends BaseIntegrationTe
         //then
         addingNewProduct.andExpect(status().isCreated());
 
-        //8. User add new service and receives 201.
-        //given
-        //when
+        //8. User add new service and receives isCreated.
+        //given, when
         ResultActions addingNewService = mockMvc.perform(post("/services")
                 .header("Authorization", "Bearer " + userToken)
                 .content(serviceDataExample().trim())
@@ -132,9 +125,8 @@ public class UserWantToAddOrderScenarioIntegrationTest extends BaseIntegrationTe
         //then
         addingNewService.andExpect(status().isCreated());
 
-        //8. User tries to add order without items.
-        //given
-        //when
+        //9. User tries to add order without items.
+        //given, when
         ResultActions addingOrderWithoutItems = mockMvc.perform(post("/orders")
                 .header("Authorization", "Bearer " + userToken)
                 .content(orderWithoutItems().trim())
@@ -142,9 +134,8 @@ public class UserWantToAddOrderScenarioIntegrationTest extends BaseIntegrationTe
         //then
         addingOrderWithoutItems.andExpect(status().isNotAcceptable());
 
-        //9. User adds order and receives 201 response.
-        //given
-        //when
+        //10. User adds order and receives isCreated response.
+        //given, when
         ResultActions addingOrderWithoutClient = mockMvc.perform(post("/orders")
                 .header("Authorization", "Bearer " + userToken)
                 .content(orderExample().trim())
